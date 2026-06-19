@@ -1,0 +1,146 @@
+schema_version: 1.0
+
+scenario_id: TF-004
+title: Terraform State File Missing
+slug: terraform-state-file-missing
+
+category: state-management
+domain: terraform
+
+severity: P0
+priority: P0
+status: ACTIVE
+
+summary: >
+  Terraform state file is missing locally or from remote backend.
+  Terraform loses resource awareness and may attempt to recreate
+  existing infrastructure.
+
+blast_radius:
+  scope: infrastructure
+  impact: critical
+
+recovery_complexity:
+  level: critical
+  estimated_time: 1h-8h
+
+escalation:
+  level_1: DevOps Engineer
+  level_2: Senior DevOps Engineer
+  level_3: Platform Engineer
+  level_4: Incident Commander
+
+technologies:
+  - terraform
+  - terraform-state
+  - infrastructure-as-code
+  - backend-storage
+
+tags:
+  - missing-state
+  - terraform-recovery
+  - disaster-recovery
+  - state-rebuild
+
+symptoms:
+  - terraform state file missing
+  - remote backend state missing
+  - terraform plan wants to recreate everything
+  - terraform loses resource awareness
+  - backend object not found
+
+common_error_messages:
+  - No state file found
+  - Failed to load state
+  - State snapshot not found
+  - Backend object missing
+  - Error loading state
+
+incident_matchers:
+  exact_match:
+    - no state file found
+    - state snapshot not found
+
+  contains:
+    - missing state
+    - backend object missing
+    - state not found
+    - failed to load state
+
+  regex:
+    - ".*state.*missing.*"
+    - ".*no state file.*"
+    - ".*state snapshot not found.*"
+
+known_signatures:
+  - signature: No state file found
+    confidence: 100
+
+  - signature: State snapshot not found
+    confidence: 95
+
+  - signature: Backend object missing
+    confidence: 90
+
+  - signature: Terraform wants to recreate all resources
+    confidence: 85
+
+root_causes:
+  - accidental state deletion
+  - backend object deletion
+  - failed backend migration
+  - bucket cleanup
+  - misconfigured backend key
+  - human error
+
+missing_state_types:
+  - local state missing
+  - remote backend state missing
+  - backend configuration mismatch
+  - state migration failure
+
+recovery_decision:
+  decision_required: true
+
+  paths:
+    - restore_backup
+    - rebuild_state
+
+investigation_steps:
+  - Confirm state file missing
+  - Validate backend configuration
+  - Check backup availability
+  - Determine recovery path
+
+recovery_paths:
+  - restore_backup
+  - rebuild_state
+
+restore_backup:
+  description: Restore missing state from healthy backup
+
+rebuild_state:
+  description: Rebuild state by importing infrastructure resources
+
+rollback_options:
+  - Abort unsafe recovery
+  - Restore alternate backup
+  - Escalate to platform engineering
+
+verification_requirements:
+  - State restored
+  - Resources mapped correctly
+  - Terraform plan safe
+  - Infrastructure stable
+
+exit_criteria:
+  - State available
+  - Terraform operational
+  - Infrastructure consistent
+  - No active incident
+
+related_scenarios:
+  - TF-001
+  - TF-002
+  - TF-003
+  - TF-034

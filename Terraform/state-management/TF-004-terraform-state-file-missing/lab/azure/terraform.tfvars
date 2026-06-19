@@ -1,0 +1,5 @@
+environment          = "prod"
+location             = "Central India"
+storage_account_name = "tfstatezenithrahub"
+resource_group_name  = "rg-prod"
+container_name       = "tfstate"
