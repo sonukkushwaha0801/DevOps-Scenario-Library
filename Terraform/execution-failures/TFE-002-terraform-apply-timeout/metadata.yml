@@ -1,0 +1,148 @@
+
+schema_version: 1.0
+
+scenario_id: TF-EF-002
+title: Terraform Apply Timeout
+slug: terraform-apply-timeout
+
+category: execution-failures
+domain: terraform
+
+severity: P0
+priority: P0
+status: ACTIVE
+
+summary: >
+  Terraform apply operation timed out or was interrupted before completion.
+  Resource creation may still be in progress, completed, or partially completed,
+  leaving infrastructure and Terraform state in an uncertain state.
+
+blast_radius:
+  scope: infrastructure
+  impact: critical
+
+recovery_complexity:
+  level: critical
+  estimated_time: 1h-12h
+
+escalation:
+  level_1: DevOps Engineer
+  level_2: Senior DevOps Engineer
+  level_3: Platform Engineer
+  level_4: Incident Commander
+
+technologies:
+  - terraform
+  - infrastructure-as-code
+  - cloud-infrastructure
+  - provisioning
+
+tags:
+  - apply-timeout
+  - execution-failure
+  - interrupted-apply
+  - timeout-recovery
+
+symptoms:
+  - terraform apply hanging
+  - apply operation timed out
+  - pipeline timeout
+  - long-running apply
+  - apply interrupted unexpectedly
+
+common_error_messages:
+  - Apply timeout exceeded
+  - Request timeout
+  - Context deadline exceeded
+  - Pipeline execution timeout
+  - Operation interrupted
+
+incident_matchers:
+  exact_match:
+    - Context deadline exceeded
+
+  contains:
+    - timeout
+    - apply interrupted
+    - request timeout
+    - operation interrupted
+
+  regex:
+    - ".*timeout.*"
+    - ".*deadline.*exceeded.*"
+    - ".*apply.*interrupted.*"
+
+known_signatures:
+  - signature: Apply operation exceeded expected duration
+    confidence: 100
+
+  - signature: Resource creation status unknown
+    confidence: 95
+
+  - signature: State update uncertain
+    confidence: 90
+
+  - signature: Long-running provider operation interrupted
+    confidence: 85
+
+root_causes:
+  - slow cloud api
+  - provider throttling
+  - network instability
+  - ci cd timeout
+  - long running resource creation
+  - provider timeout
+
+failure_types:
+  - apply timeout
+  - execution interruption
+  - network timeout
+  - pipeline timeout
+  - provider timeout
+
+investigation_steps:
+  - Determine timeout source
+  - Check resource creation status
+  - Validate Terraform state
+  - Assess infrastructure impact
+  - Select recovery path
+
+recovery_paths:
+  - check_resource_status
+  - retry_apply
+  - import_missing_resources
+  - manual_recovery
+
+check_resource_status:
+  description: Validate actual infrastructure resource status
+
+retry_apply:
+  description: Retry terraform apply if operation incomplete
+
+import_missing_resources:
+  description: Import resources created but not tracked in state
+
+manual_recovery:
+  description: Manual infrastructure recovery and reconciliation
+
+rollback_options:
+  - Stop further changes
+  - Preserve current state
+  - Escalate to platform engineering
+
+verification_requirements:
+  - Resource status confirmed
+  - Infrastructure consistent
+  - Terraform state valid
+  - Terraform plan safe
+
+exit_criteria:
+  - Infrastructure consistent
+  - Resource status confirmed
+  - Terraform operational
+  - No active incident
+
+related_scenarios:
+  - TFE-001: Partial Apply Failure
+  - TFSM-002:  Terraform State Drift Detected
+  - TFSM-003: Terraform State Corruption
