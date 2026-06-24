@@ -1,0 +1,110 @@
+scenario_id: DOCKER-001
+domain: docker
+title: Container Exits Immediately
+
+status: ACTIVE
+severity: medium
+priority: P2
+
+blast_radius:
+  scope: service
+  impact: high
+
+recovery_complexity:
+  level: low
+  estimated_time: 15m-45m
+
+ownership:
+  team: devops
+  escalation:
+    level_1: DevOps Engineer
+    level_2: Senior DevOps Engineer
+    level_3: Platform Engineer
+    level_4: Incident Commander
+
+technologies:
+  - docker
+  - containers
+  - container-runtime
+
+tags:
+  - startup-failure
+  - crash
+  - container-exit
+  - runtime-error
+
+symptoms:
+  - Container starts and exits immediately
+  - Service becomes unavailable
+  - Application inside container never reaches ready state
+  - Container status shows Exited
+  - Frequent container restart attempts
+
+common_error_messages:
+  - "Exited (1)"
+  - "Exited (127)"
+  - "Exited (137)"
+  - "exec format error"
+  - "permission denied"
+  - "no such file or directory"
+  - "command not found"
+  - "OCI runtime create failed"
+
+incident_matchers:
+  exact_match:
+    - "Container exits immediately after startup"
+    - "Docker container status is Exited"
+
+  contains:
+    - "Exited"
+    - "OCI runtime"
+    - "exec format error"
+    - "permission denied"
+
+  regex:
+    - "Exited \\([0-9]+\\)"
+    - "OCI runtime.*failed"
+
+known_signatures:
+  - signature: "Exited (1)"
+    confidence: 100
+
+  - signature: "exec format error"
+    confidence: 95
+
+  - signature: "OCI runtime create failed"
+    confidence: 90
+
+  - signature: "permission denied"
+    confidence: 85
+
+root_causes:
+  - Invalid CMD or ENTRYPOINT
+  - Application crash during startup
+  - Missing environment variables
+  - Startup script failure
+  - File permission issue
+  - Missing dependency or binary
+  - Wrong image architecture
+  - Volume mount issue
+
+recovery_paths:
+  - Validate container logs
+  - Inspect container configuration
+  - Validate startup command
+  - Fix environment configuration
+  - Fix image build issues
+  - Redeploy container
+
+verification_requirements:
+  - Container remains running
+  - Application responds successfully
+  - No restart loop observed
+  - Health checks pass
+  - Logs show successful startup
+
+related_scenarios:
+  - DOCKER-002
+  - DOCKER-005
+  - DOCKER-011
+  - DOCKER-012
