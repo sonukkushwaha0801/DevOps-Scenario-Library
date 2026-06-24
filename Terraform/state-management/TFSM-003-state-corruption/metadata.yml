@@ -1,0 +1,155 @@
+
+schema_version: 1.0
+
+scenario_id: TFSM-003
+title: Terraform State Corruption
+slug: terraform-state-corruption
+
+category: state-management
+domain: terraform
+
+severity: P0
+priority: P0
+status: ACTIVE
+
+summary: >
+  Terraform state file is corrupted, inconsistent, incomplete,
+  or unreadable. This may cause Terraform operations to fail
+  or produce dangerous infrastructure changes.
+
+blast_radius:
+  scope: infrastructure
+  impact: critical
+
+recovery_complexity:
+  level: critical
+  estimated_time: 1h-6h
+
+escalation:
+  level_1: DevOps Engineer
+  level_2: Senior DevOps Engineer
+  level_3: Platform Engineer
+  level_4: Incident Commander
+
+technologies:
+  - terraform
+  - terraform-state
+  - infrastructure-as-code
+  - backend-storage
+
+tags:
+  - state-corruption
+  - terraform-recovery
+  - disaster-recovery
+  - state-repair
+
+symptoms:
+  - terraform state commands fail
+  - terraform plan behaves unpredictably
+  - terraform apply becomes unsafe
+  - missing resources in state
+  - unexpected resource recreation
+
+common_error_messages:
+  - Failed to load state
+  - Unsupported state format
+  - State file corrupted
+  - Invalid state file
+  - JSON parse error
+  - Error reading state
+
+incident_matchers:
+  exact_match:
+    - state file corrupted
+    - failed to load state
+
+  contains:
+    - corrupted state
+    - invalid state
+    - json parse error
+    - failed to read state
+
+  regex:
+    - ".*state.*corrupt.*"
+    - ".*failed to load state.*"
+    - ".*json parse error.*"
+
+known_signatures:
+  - signature: Failed to load state
+    confidence: 100
+
+  - signature: Unsupported state format
+    confidence: 95
+
+  - signature: Missing resources from state
+    confidence: 90
+
+  - signature: Unexpected resource recreation
+    confidence: 85
+
+root_causes:
+  - interrupted state write
+  - backend corruption
+  - manual state file edits
+  - partial migration failure
+  - storage corruption
+  - failed recovery attempts
+
+corruption_types:
+  - state file corruption
+  - partial resource corruption
+  - backend corruption
+  - metadata corruption
+  - state version mismatch
+
+recovery_decision:
+  decision_required: true
+
+  paths:
+    - restore_backup
+    - repair_state
+    - rebuild_state
+
+investigation_steps:
+  - Identify corruption severity
+  - Check state accessibility
+  - Check backup availability
+  - Determine corruption type
+  - Select recovery path
+
+recovery_paths:
+  - restore_backup
+  - repair_state
+  - rebuild_state
+
+restore_backup:
+  description: Restore from last healthy state backup
+
+repair_state:
+  description: Repair corrupted state manually or using Terraform state commands
+
+rebuild_state:
+  description: Rebuild state by re-importing infrastructure resources
+
+rollback_options:
+  - Restore previous backup
+  - Abort repair operations
+  - Escalate to platform engineering
+
+verification_requirements:
+  - State readable
+  - State consistent
+  - Resources mapped correctly
+  - Terraform plan safe
+
+exit_criteria:
+  - State restored
+  - Terraform operational
+  - Infrastructure consistent
+  - No active incident
+
+related_scenarios:
+  - TFSM-001
+  - TFSM-002
+  - TFSM-004
+  - TFSM-034
