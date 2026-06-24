@@ -1,0 +1,147 @@
+schema_version: 1.0
+
+scenario_id: TF-EF-001
+title: Partial Apply Failure
+slug: partial-apply-failure
+
+category: execution-failures
+domain: terraform
+
+severity: P0
+priority: P0
+status: ACTIVE
+
+summary: >
+  Terraform apply operation failed after partially creating or modifying infrastructure.
+  Some resources may exist while others failed, leaving infrastructure in a partially provisioned state.
+
+blast_radius:
+  scope: infrastructure
+  impact: critical
+
+recovery_complexity:
+  level: critical
+  estimated_time: 1h-12h
+
+escalation:
+  level_1: DevOps Engineer
+  level_2: Senior DevOps Engineer
+  level_3: Platform Engineer
+  level_4: Incident Commander
+
+technologies:
+  - terraform
+  - infrastructure-as-code
+  - cloud-infrastructure
+  - provisioning
+
+tags:
+  - partial-apply
+  - execution-failure
+  - infrastructure-recovery
+  - apply-failure
+
+symptoms:
+  - terraform apply failed midway
+  - partial infrastructure created
+  - resource dependency failures
+  - inconsistent infrastructure state
+  - deployment incomplete
+
+common_error_messages:
+  - Error applying plan
+  - Request timeout
+  - Quota exceeded
+  - Permission denied
+  - Resource creation failed
+
+incident_matchers:
+  exact_match:
+    - Error applying plan
+
+  contains:
+    - apply failed
+    - request timeout
+    - resource creation failed
+    - quota exceeded
+
+  regex:
+    - ".*apply.*failed.*"
+    - ".*resource.*creation.*failed.*"
+    - ".*quota.*exceeded.*"
+
+known_signatures:
+  - signature: Apply failed after creating resources
+    confidence: 100
+
+  - signature: Some resources exist but deployment incomplete
+    confidence: 95
+
+  - signature: State partially updated
+    confidence: 90
+
+  - signature: Dependency creation failed
+    confidence: 85
+
+root_causes:
+  - api rate limiting
+  - cloud quota exceeded
+  - provider outage
+  - network timeout
+  - permission denied
+  - dependency failure
+  - invalid configuration
+
+failure_types:
+  - partial resource creation
+  - partial resource modification
+  - dependency failure
+  - provider interruption
+  - timeout during apply
+
+investigation_steps:
+  - Identify resources successfully created
+  - Identify failed resources
+  - Validate Terraform state consistency
+  - Assess infrastructure impact
+  - Select recovery path
+
+recovery_paths:
+  - retry_apply
+  - rollback_partial
+  - import_missing_resources
+  - manual_recovery
+
+retry_apply:
+  description: Retry terraform apply if failure cause is transient
+
+rollback_partial:
+  description: Destroy partially created infrastructure
+
+import_missing_resources:
+  description: Import resources created but not tracked in state
+
+manual_recovery:
+  description: Manual infrastructure recovery and reconciliation
+
+rollback_options:
+  - Stop further changes
+  - Preserve partial state
+  - Escalate to platform engineering
+
+verification_requirements:
+  - Infrastructure consistent
+  - Terraform state valid
+  - Dependencies healthy
+  - Terraform plan safe
+
+exit_criteria:
+  - Infrastructure consistent
+  - Terraform operational
+  - State valid
+  - No active incident
+
+related_scenarios:
+  - TF-002
+  - TF-003
+  - TF-004

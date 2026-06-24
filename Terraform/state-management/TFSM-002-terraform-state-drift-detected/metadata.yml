@@ -1,0 +1,136 @@
+
+schema_version: 1.0
+
+scenario_id: TFSM-002
+title: Terraform State Drift Detected
+slug: terraform-state-drift-detected
+
+category: state-management
+domain: terraform
+
+severity: P1
+priority: P1
+status: ACTIVE
+
+summary: >
+  Terraform state no longer matches actual infrastructure state.
+  Drift occurs when infrastructure changes outside Terraform,
+  causing mismatch between declared IaC and real resources.
+
+blast_radius:
+  scope: environment
+  impact: high
+
+recovery_complexity:
+  level: high
+  estimated_time: 30m-2h
+
+escalation:
+  level_1: DevOps Engineer
+  level_2: Senior DevOps Engineer
+  level_3: Platform Engineer
+  level_4: Incident Commander
+
+technologies:
+  - terraform
+  - state-management
+  - infrastructure-as-code
+  - drift-detection
+
+tags:
+  - terraform-state
+  - drift
+  - infrastructure-drift
+  - reconciliation
+  - incident-response
+
+symptoms:
+  - unexpected terraform plan changes
+  - unexpected resource recreation
+  - terraform wants to modify unmanaged changes
+  - infrastructure behavior differs from IaC definition
+  - drift detection alert triggered
+
+common_error_messages:
+  - No explicit error in most cases
+  - Drift usually detected via terraform plan output
+
+incident_matchers:
+  exact_match:
+    - drift detected
+
+  contains:
+    - must be replaced
+    - will be updated in-place
+    - drift
+    - resource changed outside terraform
+
+  regex:
+    - ".*must be replaced.*"
+    - ".*updated in-place.*"
+    - ".*drift.*"
+
+known_signatures:
+  - signature: unexpected terraform plan changes
+    confidence: 100
+
+  - signature: resource must be replaced
+    confidence: 95
+
+  - signature: infrastructure differs from state
+    confidence: 90
+
+root_causes:
+  - manual infrastructure changes
+  - cloud console modifications
+  - external automation changes
+  - resource deleted manually
+  - policy enforcement changes
+  - emergency production hotfix
+
+drift_resolution:
+  decision_required: true
+
+  paths:
+    - accept_manual_change
+    - revert_manual_change
+
+investigation_steps:
+  - Run terraform plan
+  - Identify drifted resources
+  - Compare Terraform code vs actual infrastructure
+  - Identify who changed infrastructure
+  - Determine if change was approved
+
+recovery_paths:
+  - accept_drift
+  - reject_drift
+
+accept_drift:
+  description: Infrastructure is correct, IaC must be updated.
+
+reject_drift:
+  description: IaC is correct, infrastructure must be reverted.
+
+rollback_options:
+  - Restore previous infrastructure state
+  - Revert Terraform changes
+  - Escalate to platform engineering
+
+verification_requirements:
+  - Drift resolved
+  - terraform plan clean
+  - IaC matches infrastructure
+  - source of truth restored
+
+exit_criteria:
+  - No drift detected
+  - terraform plan clean
+  - Infrastructure matches IaC
+  - No active incident
+
+related_scenarios:
+  - TFSM-001
+  - TFSM-003
+  - TFSM-034
+
