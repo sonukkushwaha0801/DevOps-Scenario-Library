@@ -1,9 +1,9 @@
 provider "aws" {
-  alias  = "mumbai"
+  alias = "mumbai"
   region = "ap-south-1"
 }
 
 provider "aws" {
-  alias  = "Hyderabad"
+  alias = "Hyderabad"
   region = "ap-south-2"
 }
